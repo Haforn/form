@@ -1,0 +1,16 @@
+I"Ã(function() {
+  $(function() {
+    $('.new_comment').on('keyup', function(evt) {
+      return console.log(evt.which);
+    });
+    return $('.new_comment').on('ajax:success', function(evt, post, status) {
+      var $comment;
+      $comment = $('<div/>').addClass('comment').html(post.body);
+      $comment.append($('<hr/>'));
+      $('.comments').append($comment);
+      return $('.new_comment textarea').val('').focus();
+    });
+  });
+
+}).call(this);
+:ET

@@ -1,0 +1,13 @@
+I"e(function() {
+  $(function() {
+    return $('.new_comment').on('ajax:success', function(evt, post, status) {
+      var $comment;
+      $comment = $('<div/>').addClass('comment').html(post.body);
+      $comment.append($('<hr/>'));
+      $('.comments').append($comment);
+      return $('.new_comment textarea').val(nil).focus();
+    });
+  });
+
+}).call(this);
+:ET

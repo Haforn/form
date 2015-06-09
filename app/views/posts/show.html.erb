@@ -1,0 +1,18 @@
+<h1><%= @post.title %></h1>
+<%= simple_format @post.body %>
+
+<hr>
+
+<div class='comments'>
+	<% @post.comments.each do |comment| %>
+		<div class='comment'>
+			
+			<%= render 'comments/show', comment: comment %>
+
+		</div>
+	<% end %>
+</div>
+
+<%= form_for [@post, Comment.new], remote: true do |f| -%>
+  <p><%= f.text_field :body, placeholder: 'Schrijf een reatie...', class: 'input-comment' %></p>
+<% end -%>

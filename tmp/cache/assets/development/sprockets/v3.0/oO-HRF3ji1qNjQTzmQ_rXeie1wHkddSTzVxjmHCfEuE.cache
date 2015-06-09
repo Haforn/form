@@ -1,0 +1,25 @@
+I"Ä(function() {
+  $(function() {
+    $('.new_comment').on('keydown', function(evt) {
+      if (evt.which === 13) {
+        return $(this).submit();
+      }
+    });
+    return $('.new_comment').on('ajax:success', function(evt, post, status) {
+      var $comment;
+      console.log(evt, post.body.length, status);
+      if (post.body.length > 1) {
+        $comment = $('<div/>').addClass('comment').html(post.body);
+        $comment.hide();
+        $comment.append($('<hr/>'));
+        $('.comments').append($comment);
+        $comment.slideDown();
+        return $('.new_comment textarea').val('').focus();
+      } else {
+        return console.log(this.find('textarea'));
+      }
+    });
+  });
+
+}).call(this);
+:ET

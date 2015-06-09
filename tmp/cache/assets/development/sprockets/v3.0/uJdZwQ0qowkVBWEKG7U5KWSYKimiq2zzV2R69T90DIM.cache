@@ -1,0 +1,7 @@
+I"n(function() {
+  $(function() {
+    return console.log('done!', $('.new_comment'));
+  });
+
+}).call(this);
+:ET

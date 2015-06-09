@@ -1,0 +1,7 @@
+I"[(function() {
+  $(function() {
+    return console.log('done!');
+  });
+
+}).call(this);
+:ET

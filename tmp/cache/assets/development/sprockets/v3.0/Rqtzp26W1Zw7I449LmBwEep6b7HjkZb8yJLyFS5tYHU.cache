@@ -1,0 +1,10 @@
+I"å(function() {
+  $(function() {
+    console.log('done!', $('.new_comment'));
+    return $('.new_comment').on('ajax:success', function(evt, post, status) {
+      return console.log(evt, post, status);
+    });
+  });
+
+}).call(this);
+:ET

@@ -1,0 +1,123 @@
+$ ->
+	# Keydown event in the new_comment form
+	$('.new_comment, .edit_comment').on 'keydown', (evt) ->
+		if evt.which == 13
+			evt.preventDefault();
+			$(this).submit()
+
+	# Submitting the form
+	$('.new_comment').on 'ajax:success', (evt, post, status) ->
+		# remove the error message if its there
+		if $(this).find('.error-field').length > 0
+				$(this).find('.error-field').removeClass('error-field')
+				$('.error-message').remove()
+		
+		# Check if post body has any value after its trimed
+		$str = post.body.trim()
+		console.log($str.length)
+		if $str.length > 1
+			$comment = $('<div/>').addClass('comment').html(post.body)
+			$dataSetUp =  ' data_post_id="' + post.post_id + '" data_comment_id="' + post.id + '" '
+			$comment.append('
+				<a class="js-edit" data-remote="true" href="/posts/' + post.post_id + '/comments/' + post.id + '/edit">Edit</a>
+				<a href="/" class="js-trigger" ' + $dataSetUp + ' data-remote="true">Verwijderen?</a>')
+			# Bind click event
+			$comment.find('.js-trigger').bind 'click', ->
+			  setTrigger(this)
+			  return
+
+			$comment.find('.js-edit').bind 'click', ->
+			  editComment(this)
+			  return
+
+			$comment.hide()
+			$comment.append $('<hr/>')
+			$('.comments').append $comment
+			$comment.slideDown()
+
+			$('.new_comment .input-comment').val('').focus()
+
+		# Displaying the error messages
+		else
+			$form = $(this).find('.input-comment')
+			$form.parent().addClass('error-field')
+			$error_message = $('<span/>').addClass('error-message').html('Comment can\'t be blank')
+			$form.after($error_message)
+			$error_message.delay(100).queue () ->
+				$error_message.addClass('show-message')
+
+	### Destroy pop up ###
+	# Trigger the delete confirm message
+	$('.js-trigger').on 'click', () ->
+		setTrigger(this)
+
+	setTrigger = (el) ->
+		# Getting back the right id's for the job
+		$post_id = $(el).attr('data_post_id')
+		$comment_id = $(el).attr('data_comment_id') 
+
+		# building the confirm box
+		$confirm = $('<div/>').addClass('js-confirm')
+		$confirm.html('<p>Weet je het zeker?</p>')
+		$confirm.append('
+			<a class="js-yes" data_comment_id="" data-remote="true" rel="nofollow" data-method="delete" href="">
+				Ja
+			</a>
+			<a href="/" data-remote="true" class="js-no">
+				nee
+			</a>')
+
+		# Adding the comment id, so it can be traced back
+		$confirm.find('.js-yes').attr('data_comment_id', $comment_id) 
+
+		# Setting the destroy path
+		$href = 'posts/' + $post_id + '/comments/' + $comment_id
+		$confirm.find('.js-yes').attr('href', $href)
+		
+		$('.overlay').addClass('active')
+
+		$confirm.hide()
+		$('body').append $confirm
+		$confirm.slideDown()
+
+		# Bind click events
+		$confirm.find('.js-no').bind 'click', ->
+		  removePopUp()
+		  return
+
+		$confirm.find('.js-yes').bind 'click', ->
+			confirmedYes(this)
+			return
+
+	# Onclick overlay
+	$('.overlay').on 'click', () ->
+		removePopUp()
+
+	# remove overlay and trigger popup
+	removePopUp = () ->
+		$('.overlay').removeClass('active')
+		$('.js-confirm').slideUp(300)
+		$('.js-confirm').delay(300).queue () ->
+			$(this).remove()
+
+	confirmedYes = (el) ->
+		# Removing the pop up
+		removePopUp()
+
+		# Getting back the data value to find the right element
+		$dataVal = $(el).attr('data_comment_id')
+
+		$comment = $('a[data_comment_id="' + $dataVal + '"]').parent()
+		$comment.slideUp()
+		$comment.delay(300).queue () ->
+			$(this).remove()
+
+	### Edit comment ###
+	$('.js-edit').on 'click', (evt) ->
+		editComment(this)
+
+	editComment = (el) ->
+		$(el).on 'ajax:success', (evt, post, status) ->			
+			$('.new_comment').addClass('edit_comment').removeClass('new_comment');
+			$('.edit_comment').find('input-comment').val(post.body)
+

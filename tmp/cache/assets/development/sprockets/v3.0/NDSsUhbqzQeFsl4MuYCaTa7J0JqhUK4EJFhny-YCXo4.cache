@@ -1,0 +1,30 @@
+I"Ô(function() {
+  $(function() {
+    $('.new_comment').on('keyup', function(evt) {
+      if (evt.which === 13) {
+        return $(this).submit();
+      }
+    });
+    return $('.new_comment').on('ajax:success', function(evt, post, status) {
+      var $comment, $error_message, $form;
+      if (post.body.length > 1) {
+        $comment = $('<div/>').addClass('comment').html(post.body);
+        $comment.hide();
+        $comment.append($('<hr/>'));
+        $('.comments').append($comment);
+        $comment.slideDown();
+        return $('.new_comment textarea').val('').focus();
+      } else {
+        $form = $(this).find('textarea');
+        $form.parent().addClass('error-field');
+        $error_message = $('<span/>').addClass('error-message').html('Comment can\'t be blank');
+        $form.after($error_message);
+        return $error_message.delay(1).queue(function() {
+          return $error_message.addClass('show-message');
+        });
+      }
+    });
+  });
+
+}).call(this);
+:ET

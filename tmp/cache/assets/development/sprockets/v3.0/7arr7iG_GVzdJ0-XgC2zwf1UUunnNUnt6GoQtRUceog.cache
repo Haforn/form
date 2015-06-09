@@ -1,0 +1,20 @@
+I"ï(function() {
+  $(function() {
+    $('.new_comment').on('keyup', function(evt) {
+      if (evt.which === 13) {
+        evt.preventDefault();
+        $(this).submit();
+        return false;
+      }
+    });
+    return $('.new_comment').on('ajax:success', function(evt, post, status) {
+      var $comment;
+      $(this)[0].reset();
+      $(this).find('textarea').focus();
+      $comment = $('<comment/>').html(post.body);
+      return $('.comments').append($comment);
+    });
+  });
+
+}).call(this);
+:ET

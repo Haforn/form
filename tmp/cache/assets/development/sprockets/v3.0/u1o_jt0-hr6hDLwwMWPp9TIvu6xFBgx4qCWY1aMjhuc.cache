@@ -1,0 +1,9 @@
+I"˜(function() {
+  $(function() {
+    return $('.new_comment').on('ajax:success', function(evt) {
+      return alert('wut');
+    });
+  });
+
+}).call(this);
+:ET
